@@ -18,3 +18,10 @@ df_d_0105 <- df_velo[df_velo$Jour == "2025-01-05", ]
 df_d_1128 <- df_velo[df_velo$Jour == "2025-11-28", ]
 ```
 
+## Question 2 : Fonction filtre_anomalie()
+```{r}
+filtre_anomalie <- function(df_velo) {
+  df_filtre <- df_velo[!(df_velo$`Probabilité de présence d'anomalies` %in% c("Forte", "Faible")), ]
+  return(df_filtre)
+}
+```
