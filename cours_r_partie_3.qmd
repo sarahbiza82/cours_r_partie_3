@@ -2,10 +2,19 @@
 title: "cours_r_partie_3"
 ---
 
-## Quarto
+# Exercice
 
-Quarto enables you to weave together content and executable code into a finished document. To learn more about Quarto see <https://quarto.org>.
+## Question 1 : Import des données + création des sous-dataframes
 
 ```{r}
-1 + 1
+library(readr)
+df_velo <- read_delim("data_velo.csv")
+
+df_b_788 <- df_velo[df_velo$`Numéro de boucle` == 788, ]
+df_b_947 <- df_velo[df_velo$`Numéro de boucle` == 947, ]
+
+
+df_d_0105 <- df_velo[df_velo$Jour == "2025-01-05", ]
+df_d_1128 <- df_velo[df_velo$Jour == "2025-11-28", ]
 ```
+
