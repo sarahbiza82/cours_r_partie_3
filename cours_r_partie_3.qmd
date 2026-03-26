@@ -145,4 +145,113 @@ Les fonctions implémentées permettent d'extraire des statistiques descriptives
 - certaines valeurs extrêmes peuvent être liées à des anomalies
 - la distribution hebdomadaire met en évidence des comportements typiques (mobilité domicile-travail)
 
+## Question 9 : Fonction plot_distribution_semaine()
+```{r}
+plot_distribution_semaine <- function(df_velo) {
+  
+  df_clean <- filtre_anomalie(df_velo)
+  
+  if(nrow(df_clean) == 0){
+    message("Aucune donnée après filtrage des anomalies, utilisation du dataset complet")
+    df_clean <- df_velo
+  }
+  
+  dist <- calcul_distribution_semaine(df_clean)
+  
+  ggplot(dist, aes(x = factor(`Jour de la semaine`), y = Total)) +
+    geom_col(fill = "steelblue") +
+    labs(
+      title = "Distribution des trajets par jour de la semaine",
+      x = "Jour de la semaine (1=Lundi, 7=Dimanche)",
+      y = "Nombre total de trajets"
+    ) +
+    theme_minimal()
+}
+```
+
+### Application
+```{r}
+plot_distribution_semaine(df_b_788)
+plot_distribution_semaine(df_b_947)
+plot_distribution_semaine(df_d_0105)
+plot_distribution_semaine(df_d_1128)
+```
+
+## Question 10 : Amélioration de trouver_trajet_max()
+```{r}
+trouver_trajet_max <- function(df_velo) {
+  
+  # 1️⃣ Filtrer anomalies
+  df_clean <- filtre_anomalie(df_velo)
+  
+  # 2️⃣ Identifier la ligne avec le max
+  idx <- which.max(df_clean$Total)
+  max_boucle <- df_clean$`Boucle de comptage`[idx]
+  max_jour <- df_clean$Jour[idx]
+  
+  # 3️⃣ Moyenne par jour pour cette boucle
+  mean_par_jour <- mean(df_clean$Total[df_clean$`Boucle de comptage` == max_boucle], na.rm = TRUE)
+  
+  # 4️⃣ Moyenne par boucle pour ce jour
+  mean_par_boucle <- mean(df_clean$Total[df_clean$Jour == max_jour], na.rm = TRUE)
+  
+  # 5️⃣ Retourner tout
+  list(
+    boucle = max_boucle,
+    jour = max_jour,
+    nb_passages = df_clean$Total[idx],
+    moyenne_par_jour = mean_par_jour,
+    moyenne_par_boucle = mean_par_boucle
+  )
+}
+```
+
+### Application
+```{r}
+trouver_trajet_max(df_b_788)
+trouver_trajet_max(df_b_947)
+trouver_trajet_max(df_d_0105)
+trouver_trajet_max(df_d_1128)
+```
+## Bonus : Classe trajet + méthode générique max.trajet()
+```{r}
+# --- 1. Création de la classe trajet ---
+# On attribue la classe "trajet" à un data.frame
+as.trajet <- function(df_velo) {
+  # Vérification colonnes requises
+  required_cols <- c("Boucle de comptage", "Jour", "Total")
+  if(!all(required_cols %in% colnames(df_velo))){
+    stop("Le data.frame doit contenir les colonnes : Boucle de comptage, Jour, Total")
+  }
+  class(df_velo) <- c("trajet", class(df_velo))
+  return(df_velo)
+}
+
+# --- 2. Méthode générique max.trajet() ---
+max.trajet <- function(x, ...) {
+  UseMethod("max.trajet")
+}
+
+# --- 3. Méthode pour objets de classe trajet ---
+max.trajet.trajet <- function(x, ...) {
+  
+  # On réutilise la fonction trouver_trajet_max() mais appliquée à x
+  res <- trouver_trajet_max(x)
+  
+  # Retourner résultat
+  return(res)
+}
+```
+
+### Application
+```{r}
+# On transforme un data.frame en objet trajet
+df_b_788_trajet <- as.trajet(df_b_788)
+
+# On utilise la méthode générique
+max_info <- max.trajet(df_b_788_trajet)
+
+# Résultat
+print(max_info)
+```
 
