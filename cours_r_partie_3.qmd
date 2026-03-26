@@ -61,3 +61,88 @@ nrow(df_d_1128) - nrow(df_d_1128_filtre)
 ```
 La fonction filtre_anomalie permet de supprimer les observations présentant des anomalies "Forte" ou "Faible". Après application sur les différents sous-échantillons, on observe une réduction du nombre d'observations, ce qui permet de travailler sur des données plus fiables.
 
+## Question 4 : Fonction compter_nombre_trajets()
+```{r}
+compter_nombre_trajets <- function(df_velo) {
+  sum(df_velo$Total, na.rm = TRUE)
+}
+```
+
+### Application
+```{r}
+compter_nombre_trajets(df_b_788)
+compter_nombre_trajets(df_b_947)
+compter_nombre_trajets(df_d_0105)
+compter_nombre_trajets(df_d_1128)
+```
+
+## Question 5 : Fonction compter_nombre_boucle()
+```{r}
+compter_nombre_boucle <- function(df_velo) {
+  length(unique(df_velo$`Numéro de boucle`))
+}
+```
+
+### Application
+```{r}
+compter_nombre_boucle(df_b_788)
+compter_nombre_boucle(df_b_947)
+compter_nombre_boucle(df_d_0105)
+compter_nombre_boucle(df_d_1128)
+```
+## Question 6 : Fonction trouver_trajet_max()
+```{r}
+trouver_trajet_max <- function(df_velo) {
+  
+  idx <- which.max(df_velo$Total)
+  
+  list(
+    boucle = df_velo$`Boucle de comptage`[idx],
+    jour = df_velo$Jour[idx],
+    nb_passages = df_velo$Total[idx]
+  )
+}
+```
+
+### Application
+```{r}
+trouver_trajet_max(df_b_788)
+trouver_trajet_max(df_b_947)
+trouver_trajet_max(df_d_0105)
+trouver_trajet_max(df_d_1128)
+```
+
+## Question 7 : Appliquer sur df_velo
+```{r}
+trouver_trajet_max(df_velo)
+```
+
+### Nouvelle fonction Anomalie
+```{r}
+filtre_anomalie <- function(df_velo) {
+  df_velo[!(df_velo$`Probabilité de présence d'anomalies` %in% c("Forte", "Faible")) &
+       !is.na(df_velo$`Probabilité de présence d'anomalies`), ]
+}
+```
+
+
+## Question 8 : Fonction calcul_distribution_semaine()
+```{r}
+calcul_distribution_semaine <- function(df_velo) {
+  aggregate(Total ~ `Jour de la semaine`, data = df_velo, sum)
+}
+```
+
+### Application
+```{r}
+calcul_distribution_semaine(df_b_788)
+calcul_distribution_semaine(df_b_947)
+calcul_distribution_semaine(df_d_0105)
+calcul_distribution_semaine(df_d_1128)
+```
+
+Les fonctions implémentées permettent d'extraire des statistiques descriptives essentielles sur les trajets vélos. On observe que : le nombre de trajets varie fortement selon les boucles et les jours
+- certaines valeurs extrêmes peuvent être liées à des anomalies
+- la distribution hebdomadaire met en évidence des comportements typiques (mobilité domicile-travail)
+
+
