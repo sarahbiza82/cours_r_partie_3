@@ -25,3 +25,39 @@ filtre_anomalie <- function(df_velo) {
   return(df_filtre)
 }
 ```
+
+## Question 3 : Application + nombre de lignes filtrées
+```{r}
+# Application
+df_b_788_filtre <- filtre_anomalie(df_b_788)
+df_b_947_filtre <- filtre_anomalie(df_b_947)
+
+df_d_0105_filtre <- filtre_anomalie(df_d_0105)
+df_d_1128_filtre <- filtre_anomalie(df_d_1128)
+
+# Nombre de lignes supprimées
+nrow(df_b_788) - nrow(df_b_788_filtre)
+nrow(df_b_947) - nrow(df_b_947_filtre)
+
+nrow(df_d_0105) - nrow(df_d_0105_filtre)
+nrow(df_d_1128) - nrow(df_d_1128_filtre)
+```
+La fonction filtre_anomalie permet de supprimer les observations présentant des anomalies "Forte" ou "Faible". Après application sur les différents sous-échantillons, on observe une réduction du nombre d'observations, ce qui permet de travailler sur des données plus fiables.
+## Question 3 : Application + nombre de lignes filtrées
+```{r}
+# Application
+df_b_788_filtre <- filtre_anomalie(df_b_788)
+df_b_947_filtre <- filtre_anomalie(df_b_947)
+
+df_d_0105_filtre <- filtre_anomalie(df_d_0105)
+df_d_1128_filtre <- filtre_anomalie(df_d_1128)
+
+# Nombre de lignes supprimées
+nrow(df_b_788) - nrow(df_b_788_filtre)
+nrow(df_b_947) - nrow(df_b_947_filtre)
+
+nrow(df_d_0105) - nrow(df_d_0105_filtre)
+nrow(df_d_1128) - nrow(df_d_1128_filtre)
+```
+La fonction filtre_anomalie permet de supprimer les observations présentant des anomalies "Forte" ou "Faible". Après application sur les différents sous-échantillons, on observe une réduction du nombre d'observations, ce qui permet de travailler sur des données plus fiables.
+
